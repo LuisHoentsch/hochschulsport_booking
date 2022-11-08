@@ -55,8 +55,8 @@ def book(username: str, password: str, course_name: str = "Volleyball - 50:50") 
     return True
 
 
-def load_credentials(path: str = "credentials.txt"):
-    return tuple(map(lambda x: x.strip(), open(path, "r").readlines()[:2]))
+def load_credentials(path: str = "credentials.txt") -> Tuple[str]:
+    return tuple(open(path, "r").read().split("\n")[:2])
 
 
 print(book(*load_credentials()))
