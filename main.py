@@ -1,6 +1,6 @@
 from typing import Tuple
-
 import requests
+import sys
 
 
 def get_authentication_cookie(email: str, password: str) -> str:
@@ -36,7 +36,7 @@ def get_course_specific_payload(course: str, cookie: str) -> dict:
     }
 
 
-def book(username: str, password: str, course_name: str = "Volleyball - 50:50") -> bool:
+def book(username: str, password: str, course_name: str) -> bool:
     cookie = get_authentication_cookie(username, password)
     if cookie == "":
         print("Could not authenticate user.")
@@ -55,8 +55,14 @@ def book(username: str, password: str, course_name: str = "Volleyball - 50:50") 
     return True
 
 
-def load_credentials(path: str = "credentials.txt") -> Tuple[str]:
-    return tuple(open(path, "r").read().split("\n")[:2])
+def load_config(path: str) -> Tuple[str]:
+    return tuple(open(path, "r").read().split("\n")[:3])
 
 
-print(book(*load_credentials()))
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        print(book(*load_config(sys.argv[1])))
+    elif len(sys.argv) == 4:
+        print(book(*sys.argv[1:]))
+    else:
+        print("Usage:\n\tscript.py <email> <password> <course>\n\tscript.py <path/to/config.txt>")
