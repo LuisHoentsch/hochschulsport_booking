@@ -37,23 +37,23 @@ def get_course_specific_payload(course: str, cookie: str) -> dict:
     }
 
 
-def book(username: str, password: str, course_name: str) -> bool:
+def book(username: str, password: str, course_name: str) -> Tuple[bool, str]:
     cookie = get_authentication_cookie(username, password)
     if cookie == "":
         print("Could not authenticate user.")
-        return False
+        return False, ""
 
     payload = get_course_specific_payload(course_name, cookie)
     if payload == {}:
         print("Could not find course.")
-        return False
+        return False, ""
 
     url = "https://hochschulsport.uni-heidelberg.de/oa_oeff/qr_info.php"
     res = requests.post(url, payload, headers={"Cookie": cookie}).text
     if "Für diesen Kurs sind leider keine Tickets mehr verfügbar!" in res:
         print("Course already fully booked.")
-        return False
-    return True
+        return False, res
+    return True, res
 
 
 def load_config(path: str) -> Tuple[str]:
